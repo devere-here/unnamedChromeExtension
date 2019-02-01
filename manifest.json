@@ -1,18 +1,17 @@
 {
   "manifest_version": 2,
-  "name": "RaterFox",
-  "description": "The most popular movies and TV shows in your   default tab. Includes ratings, summaries and the ability to watch trailers.",
+  "name": "A Horse with No Name",
+  "description": "The most popular movies and TV shows in your default tab. Includes ratings, summaries and the ability to watch trailers.",
   "version": "1",
- "browser_action": {
-    "default_title": "Have a good day",
-    "default_popup": "popup.html"
-  },
   "background": {
-    "scripts": ["background.js"],
+    "scripts": ["extension/scripts/background.js"],
     "persistent": true
   },
+  "browser_action": {
+    "default_title": "Open dashboard"
+  },
  "chrome_url_overrides" : {
-   "newtab": "newtab.html"
+   "newtab": "extension/webPages/newtab.html"
  },
  "commands": {
   "_execute_browser_action": {

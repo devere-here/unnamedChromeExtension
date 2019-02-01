@@ -1,3 +1,4 @@
+
 chrome.runtime.onInstalled.addListener(function() {
   chrome.storage.sync.set({color: '#3aa757'}, function() {
     console.log("The color is green.");
@@ -41,4 +42,15 @@ chrome.tabs.onCreated.addListener(function(tab) {
 
 chrome.tabs.onHighlighted.addListener(function(tab) {
   console.log('in onCreated tab is', tab)
+})
+
+chrome.browserAction.onClicked.addListener(function(tab) {
+  console.log('in onClicked tab is', tab);
+  const newTabConfig = {
+    url: 'http://localhost:8080'
+  }
+
+  chrome.tabs.create(newTabConfig, function(tab) {
+    console.log('tab is', tab)
+  })
 })
