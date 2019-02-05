@@ -1,6 +1,8 @@
-import React, {Component} from 'react';
+import React, {Component} from 'react'
+import { connect } from 'react-redux'
+import { addWebsiteObject } from '../reducers'
 
-export default class AddNewUrl extends Component {
+class AddNewUrl extends Component {
   state = {
     url: '',
     hours: 0,
@@ -11,6 +13,19 @@ export default class AddNewUrl extends Component {
     e.preventDefault()
     this.setState({
       [type]: e.target.value
+    })
+  }
+
+  submitUrl = e => {
+    e.preventDefault()
+    const website = {...this.state}
+    const { addWebsiteObject } = this.props
+
+    addWebsiteObject(website)
+    this.setState({
+      url: '',
+      hours: 0,
+      minutes: 0,
     })
   }
 
@@ -44,7 +59,19 @@ export default class AddNewUrl extends Component {
           value={minutes}
           onChange={this.onChange('minutes')}
         />
+        <button onClick={this.submitUrl}>Submit</button>
       </div>
     )
   }
 }
+
+const mapStateToProps = ({ websiteObjects, currentTabObject }) => ({
+  currentTabObject,
+  websiteObjects
+})
+
+const mapDispatchToProps = dispatch => ({
+  addWebsiteObject: (website) => dispatch(addWebsiteObject(website))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddNewUrl)

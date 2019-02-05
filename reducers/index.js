@@ -7,15 +7,20 @@ const initialState = {
   currentTabObject: {}
 }
 
+export const addWebsiteObject = (websiteObject) => ({type: ADD_NEW_URL, payload: websiteObject})
+
+export const deleteWebsiteObject = (websiteObject) => ({type: REMOVE_NEW_URL, payload: websiteObject})
+
 // Reducer
 export default function(state = initialState, action = {}) {
   switch (action.type) {
     case ADD_NEW_URL:
-      return { ...state, loading: true }
+      const { websiteObjects } = state
+      return { ...state, websiteObjects: websiteObjects.concat(action.payload) }
     case REMOVE_NEW_URL:
-      return { ...state, loading: false, member: { ...action.payload.member } }
+      return { ...state, websiteObjects: websiteObjects.filter(elem => elem.url === action.payload.url)}
     case EDIT_URL:
-      return { ...state, loading: false, error: action.payload }
+      return { ...state, websiteObjects: action.websiteObjects }
     default:
       return state
   }
