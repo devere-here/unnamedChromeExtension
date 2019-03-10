@@ -1,5 +1,5 @@
-var webpack = require('webpack');
-var path = require('path');
+const webpack = require('webpack');
+const path = require('path');
 
 var parentDir = path.join(__dirname, './');
 
@@ -15,8 +15,25 @@ module.exports = {
                 loader: 'babel-loader'
             },
             {
-                test: /\.less$/,
-                loaders: ["style-loader", "css-loder", "less-loader"]
+                test: /\.s?css$/,
+                use: [
+                    require.resolve('style-loader'),
+                    {
+                        loader: require.resolve('a-css-loader'),
+                        options: {
+                            mode: 'local',
+                            modules: true,
+                            camelize: true,
+                            minimize: {
+                                zindex: false,
+                                reduceIdents: false,
+                            },
+                        },
+                    },
+                    {
+                      loader: 'sass-loader',
+                    },
+                ],
             }
         ]
     },
