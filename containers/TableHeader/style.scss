@@ -1,0 +1,10 @@
+.container {
+  height: 20px;
+  display: flex;
+  margin-left: 40px;
+}
+
+.container > div {
+  width: 25%;
+  border: 1px solid black;
+}
