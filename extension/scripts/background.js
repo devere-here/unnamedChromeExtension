@@ -1,3 +1,5 @@
+console.log('in the background js maybe tabs webrequest and browser action are no longer availible to use')
+const timeObj = {}
 
 chrome.runtime.onInstalled.addListener(function() {
   chrome.storage.sync.set({color: '#3aa757'}, function() {
@@ -16,6 +18,15 @@ chrome.webRequest.onBeforeRequest.addListener(
 // runs when a tab is created
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
   console.log('in onUpdated', tabId, changeInfo, tab)
+  console.log('moment is', moment)
+  const start = new Date()
+  console.log('start is', start)
+})
+
+chrome.tabs.onActiveChanged.addListener(function(tabId, changeInfo, tab) {
+  console.log('in onActiveChanged', tabId, changeInfo, tab)
+  const end = new Date()
+  console.log('end is', end)
 })
 
 // runs when user goes to a new tab
@@ -29,14 +40,16 @@ chrome.tabs.onActivated.addListener(function(activeInfo) {
 
 // runs when a user closes a tab
 chrome.tabs.onRemoved.addListener(function(tabId, removeInfo) {
-  console.log('in onRemoved', tabId, removeInfo)
+  // console.log('in onRemoved', tabId, removeInfo)
   chrome.tabs.get(tabId, function(tab) {
     console.log('onRemoved in get tab is', tab)
+    console.log('end is', new Date())
   })
 })
 
 // runs when a user creates a new tab
 chrome.tabs.onCreated.addListener(function(tab) {
+  console.log('moment is', moment)
   console.log('in onCreated tab is', tab)
 })
 

@@ -42,6 +42,8 @@ module.exports = {
         filename: 'bundle.js'
     },
     devServer: {
+        host: '0.0.0.0',
+        port: 8080,
         contentBase: parentDir,
         historyApiFallback: true
     }
