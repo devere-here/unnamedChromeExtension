@@ -5,13 +5,14 @@
   "version": "1",
   "background": {
     "persistent": true,
-    "page": "background.html"
+    "page": "build/background.html"
   },
   "browser_action": {
-    "default_title": "Open dashboard"
+    "default_title": "Open dashboard",
+    "default_popup": "src/popup.html"
   },
  "chrome_url_overrides" : {
-   "newtab": "extension/webPages/newtab.html"
+   "newtab": "src/newtab.html"
  },
  "commands": {
   "_execute_browser_action": {
@@ -22,5 +23,6 @@
     "description": "Opens popup.html"
   }
  },
-  "permissions": ["activeTab", "storage", "webRequest", "webRequestBlocking", "tabs"]
+  "permissions": ["activeTab", "storage", "webRequest", "webRequestBlocking", "tabs"],
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
 }
