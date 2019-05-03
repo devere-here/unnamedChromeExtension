@@ -1,3 +1,6 @@
+import '../img/icon-128.png'
+import '../img/icon-34.png'
+
 console.log('in the background js maybe tabs webrequest and browser action are no longer availible to use')
 const timeObj = {}
 
