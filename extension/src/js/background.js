@@ -1,6 +1,7 @@
 import moment from 'moment'
 import url from 'url'
 import _ from 'lodash'
+import chromep from 'chrome-promise'
 
 const startTimes = {}
 let lastUrl
@@ -33,25 +34,20 @@ chrome.tabs.onActiveChanged.addListener(function(tabId, changeInfo) {
 })
 
 // runs when user goes to a new tab
-chrome.tabs.onActivated.addListener(function(activeInfo) {
-  chrome.tabs.get(activeInfo.tabId, function(tab) {
-    const currentWebsite = url.parse(tab.url).hostname
-    const currentTime = moment().format('x')
+chrome.tabs.onActivated.addListener(async function(activeInfo) {
+  const tab = await chromep.tabs.get(activeInfo.tabId)
+  const currentWebsite = url.parse(tab.url).hostname
+  const currentTime = moment().format('x')
 
-    if (startTimes[lastUrl]) {
-      chrome.storage.sync.get(lastUrl, function(result) {
-        const totalTime = _.get(result, [lastUrl], 0)
+  if (startTimes[lastUrl]) {
+    const result = await chromep.storage.sync.get(lastUrl)
+    const totalTime = _.get(result, [lastUrl], 0)
+    const watchTime = currentTime - startTimes[lastUrl]
 
-        const watchTime = currentTime - startTimes[lastUrl]
-        chrome.storage.sync.set({[lastUrl]: totalTime + watchTime}, function() {
-          updateState(currentWebsite, currentTime)
-        })
-      });
-    } else {
-      updateState(currentWebsite, currentTime)
-    }
+    await chromep.storage.sync.set({[lastUrl]: totalTime + watchTime})
+  }
 
-  })
+  updateState(currentWebsite, currentTime)
 })
 
 const updateState = (currentWebsite, currentTime) => {
@@ -61,27 +57,20 @@ const updateState = (currentWebsite, currentTime) => {
 }
 
 // runs when a user closes a tab
-chrome.tabs.onRemoved.addListener(function(tabId, removeInfo) {
-  chrome.tabs.get(tabId, function(tab) {
-    const removedWebsite = url.parse(tab.url).hostname
-    const endTime = moment().format('x')
+chrome.tabs.onRemoved.addListener(async function(tabId) {
+  const tab = chromep.tabs.get(tabId)
+  const removedWebsite = url.parse(tab.url).hostname
+  const endTime = moment().format('x')
 
-    if (startTimes[removedWebsite]) {
-      chrome.storage.sync.get([removedWebsite], function(result = 0) {
-        const watchTime = endTime - startTimes[removedWebsite]
-        chrome.storage.sync.set({[removedWebsite]: result + watchTime}, function() {
-          delete startTimes[removedWebsite]
-
-          if (removedWebsite === lastUrl) lastUrl = ''
-        })
-      });
-    }
-
+  if (startTimes[removedWebsite]) {
+    const result = chromep.storage.sync.get([removedWebsite])
     const watchTime = endTime - startTimes[removedWebsite]
-    delete startTimes[removedWebsite]
 
-  })
-})
+    await chromep.storage.sync.set({[removedWebsite]: result + watchTime})
+    delete startTimes[removedWebsite]
+    if (removedWebsite === lastUrl) lastUrl = ''
+  }
+});
 
 // runs when a user creates a new tab
 chrome.tabs.onCreated.addListener(function(tab) {
