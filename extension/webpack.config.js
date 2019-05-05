@@ -21,6 +21,7 @@ if (fileSystem.existsSync(secretsPath)) {
 var options = {
   mode: process.env.NODE_ENV || "development",
   entry: {
+    polyfill: 'babel-polyfill',
     popup: path.join(__dirname, "src", "js", "popup.js"),
     options: path.join(__dirname, "src", "js", "options.js"),
     background: path.join(__dirname, "src", "js", "background.js")
@@ -57,7 +58,7 @@ var options = {
     // expose and write the allowed env vars on the compiled bundle
     new webpack.EnvironmentPlugin(["NODE_ENV"]),
     new CopyWebpackPlugin([{
-      from: "src/manifest.json",
+      from: "manifest.json",
       transform: function (content, path) {
         // generates the manifest file using the package.json informations
         return Buffer.from(JSON.stringify({
