@@ -1,20 +1,6 @@
-const redis = require('redis')
-const client = redis.createClient()
+const express = require('express')
+const app = express()
+const port = 4000
 
-client.on('connect', function() {
-  console.log('Redis client connected');
-});
-
-client.on('error', function (err) {
-  console.log('Something went wrong ' + err);
-});
-
-
-client.set('poop', 'my test value', redis.print);
-client.get('poop', function (error, result) {
-    if (error) {
-        console.log(error);
-        throw error;
-    }
-    console.log('GET result ->' + result);
-});
+app.get('/', (req, res) => res.send('This is a response'))
+app.listen(port, () => console.log(`Listening on port ${port}`))
