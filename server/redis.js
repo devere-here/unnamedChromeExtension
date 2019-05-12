@@ -1,20 +1,20 @@
-const redis = require('redis')
-const client = redis.createClient()
+const asyncRedis = require("async-redis")
+const client = asyncRedis.createClient()
 
 client.on('connect', function() {
-  console.log('Redis client connected');
-});
+  console.log('Redis client connected')
+})
 
 client.on('error', function (err) {
-  console.log('Something went wrong ' + err);
-});
+  console.log('Something went wrong ' + err)
+})
 
+const clientTest = async () => {
+  await client.set('poop', 'my test value')
+  const testValue = await client.get('poop')
 
-client.set('poop', 'my test value', redis.print);
-client.get('poop', function (error, result) {
-    if (error) {
-        console.log(error);
-        throw error;
-    }
-    console.log('GET result ->' + result);
-});
+}
+
+clientTest()
+
+module.exports = client
