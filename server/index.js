@@ -13,6 +13,23 @@ app.get('/', async (req, res) => {
   res.json(data)
 })
 
+app.get('/all', async (req, res) => {
+  const multi = redisClient.multi()
+  const keys = await redisClient.keys('*')
+
+  keys.forEach(key => {
+    multi.get(key)
+  })
+
+  multi.exec(function(err, result) {
+    const data = {}
+    result.forEach((ele, idx) => {
+      data[keys[idx]] = result[idx]
+    })
+    res.json(data)
+  })
+})
+
 app.post('/', async (req, res) => {
   const { url, time } = req.body
   const data = await redisClient.set(url, time)
