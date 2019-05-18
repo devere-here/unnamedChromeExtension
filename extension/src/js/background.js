@@ -1,55 +1,61 @@
 import moment from 'moment'
-import url from 'url'
+import Url from 'url'
 import _ from 'lodash'
 import chromep from 'chrome-promise'
 import axios from 'axios'
 const baseURL = 'http://localhost:4000'
 
-const startTimes = {}
-let lastUrl
-
 const axiosInstance = axios.create({
   baseURL,
 })
 
-// runs when user goes to a new tab
-chrome.tabs.onActivated.addListener(async function(activeInfo) {
-  const tab = await chromep.tabs.get(activeInfo.tabId)
-  const currentWebsite = url.parse(tab.url).hostname
+const urlObject = {}
+
+const storeNewUrl = (tab) => {
+  const { id, url } = tab
+  const currentWebsite = Url.parse(url).hostname
   const currentTime = moment().format('x')
-  const redisData = await axiosInstance.get(`/?name=${currentWebsite}`)
 
-  if (startTimes[lastUrl]) {
-    const result = await chromep.storage.sync.get(lastUrl)
-    const totalTime = _.get(result, [lastUrl], 0)
-    const watchTime = currentTime - startTimes[lastUrl]
-
-    await chromep.storage.sync.set({[lastUrl]: totalTime + watchTime})
+  urlObject[id] = {
+    startTime: currentTime,
+    url: currentWebsite
   }
-
-  updateState(currentWebsite, currentTime)
-})
-
-const updateState = (currentWebsite, currentTime) => {
-  delete startTimes[lastUrl]
-  startTimes[currentWebsite] = currentTime
-  lastUrl = currentWebsite
 }
 
-// runs when a user closes a tab
-chrome.tabs.onRemoved.addListener(async function(tabId) {
-  const tab = await chromep.tabs.get(tabId)
-  const removedWebsite = url.parse(tab.url).hostname
-  const endTime = moment().format('x')
+const calculateTotalTime = async (website) => {
+  const currentTime = moment().format('x')
+  const { data: totalTime = 0 } = await axiosInstance.get(`/?name=${website.url}`)
 
-  if (startTimes[removedWebsite]) {
-    const result = chromep.storage.sync.get([removedWebsite])
-    const watchTime = endTime - startTimes[removedWebsite]
+  return totalTime + (currentTime - website.startTime)
+}
 
-    await chromep.storage.sync.set({[removedWebsite]: result + watchTime})
-    const redisData = await axiosInstance.post(`/`, { url: removedWebsite, time: result + watchTime})
+chrome.runtime.onInstalled.addListener(async function(details) {
+  const { id } = await chromep.windows.getCurrent()
+  const tabs = await chromep.tabs.getAllInWindow(id)
 
-    delete startTimes[removedWebsite]
-    if (removedWebsite === lastUrl) lastUrl = ''
-  }
+  tabs.forEach(tab => {
+    storeNewUrl(tab)
+  })
 });
+
+chrome.tabs.onCreated.addListener(async function(tab) {
+  storeNewUrl(tab)
+})
+
+chrome.tabs.onRemoved.addListener(async function(tabId) {
+  const website = urlObject[tabId]
+  const totalTime = await calculateTotalTime(website)
+
+  await axiosInstance.post(`/`, { url: website.url, time: totalTime})
+  delete urlObject[tabId]
+})
+
+chrome.tabs.onUpdated.addListener(async function(tabId, changeInfo, tab) {
+  if (_.get(changeInfo, ['status']) === 'complete') {
+    const website = urlObject[tabId]
+    const totalTime = await calculateTotalTime(website) || 0
+
+    await axiosInstance.post(`/`, { url: website.url, time: totalTime })
+    storeNewUrl(tab)
+  }
+})

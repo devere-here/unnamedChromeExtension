@@ -23,6 +23,6 @@
     "description": "Opens popup.html"
   }
  },
-  "permissions": ["activeTab", "storage", "webRequest", "webRequestBlocking", "tabs"],
+  "permissions": ["activeTab", "storage", "webRequest", "webRequestBlocking", "tabs", "window"],
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
 }

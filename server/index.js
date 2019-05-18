@@ -16,6 +16,7 @@ app.get('/', async (req, res) => {
 app.post('/', async (req, res) => {
   const { url, time } = req.body
   const data = await redisClient.set(url, time)
+
   res.json(data)
 })
 
