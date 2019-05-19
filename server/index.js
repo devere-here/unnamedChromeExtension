@@ -22,11 +22,13 @@ app.get('/all', async (req, res) => {
   })
 
   multi.exec(function(err, result) {
-    const data = {}
-    result.forEach((ele, idx) => {
-      data[keys[idx]] = result[idx]
-    })
-    res.json(data)
+    const websiteArray = result.map((ele, idx) => ({
+        timeUsed: result[idx],
+        allotedTime: null,
+        url: keys[idx]
+    }))
+
+    res.json(websiteArray)
   })
 })
 

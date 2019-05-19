@@ -5,7 +5,7 @@ import style from './style.scss'
 
 export class UrlList extends Component {
   render () {
-    const { websiteObjects } = this.props
+    const { websites } = this.props
 
     return (
       <div>
@@ -13,8 +13,8 @@ export class UrlList extends Component {
         <TableHeader />
         <ul className={style.container}>
           {
-            websiteObjects.map(website => (
-            <li className={style.listItem}>
+            websites && websites.map(website => (
+            <li key={website.url} className={style.listItem}>
               <div className={style.url}>{website.url}</div>
               <div className={style.totalTime}>
                 <span>{website.hours}</span>:

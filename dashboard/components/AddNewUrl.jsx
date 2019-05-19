@@ -35,13 +35,13 @@ class AddNewUrl extends Component {
     return (
       <div>
         <h1>AddNewUrl</h1>
-        <label for="url">Url:</label>
+        <label htmlFor="url">Url:</label>
         <input
           id="url"
           onChange={this.onChange('url')}
           value={url}
         />
-        <label for="hour">Hours:</label>
+        <label htmlFor="hour">Hours:</label>
         <input
           name="hour"
           type="number"
@@ -50,7 +50,7 @@ class AddNewUrl extends Component {
           value={hours}
           onChange={this.onChange('hours')}
         />
-        <label for="minute">Minutes:</label>
+        <label htmlFor="minute">Minutes:</label>
         <input
           name="minute"
           type="number"
