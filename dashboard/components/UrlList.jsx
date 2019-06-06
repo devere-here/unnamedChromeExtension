@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux'
 import TableHeader from './TableHeader'
+import UrlItem from './UrlItem.jsx'
 import style from './style.scss'
 
 export class UrlList extends Component {
@@ -14,17 +15,8 @@ export class UrlList extends Component {
         <ul className={style.container}>
           {
             websites && websites.map(website => (
-            <li key={website.url} className={style.listItem}>
-              <div className={style.url}>{website.url}</div>
-              <div className={style.totalTime}>
-                <span>{website.hours}</span>:
-                <span>{website.minutes}</span>
-              </div>
-              <div className={style.totalTimeRemaining}>
-                <span>{website.hours}</span>:
-                <span>{website.minutes}</span>
-              </div>
-            </li>))
+              <UrlItem key={website.url} website={website} />
+            ))
           }
         </ul>
       </div>
