@@ -20,3 +20,10 @@ export const getRemainingTime = (timeUsed, timeAllowed = 0) => {
   const timeRemaining = +timeAllowed - timeUsed
   return convertTime(timeRemaining)
 }
+
+export const convertToMS = (hours, minutes) => {
+  const msFromMinutes = minutes * 60000
+  const msFromHours = hours * 60000 * 24
+
+  return msFromMinutes + msFromHours
+}

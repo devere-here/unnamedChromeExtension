@@ -1,6 +1,12 @@
 import React, {Component} from 'react'
 import { connect } from 'react-redux'
+import axios from 'axios'
 import { addWebsiteObject } from '../reducers'
+import { convertToMS } from '../helpers'
+const baseURL = 'http://localhost:4000'
+const axiosInstance = axios.create({
+  baseURL,
+})
 
 class AddNewUrl extends Component {
   state = {
@@ -16,10 +22,15 @@ class AddNewUrl extends Component {
     })
   }
 
-  submitUrl = e => {
+  submitUrl = async e => {
     e.preventDefault()
     const website = {...this.state}
     const { addWebsiteObject } = this.props
+    const websiteData = {
+      url: website.url,
+      allotedTime: convertToMS(website.hours, website.minutes)
+    }
+    await axiosInstance.post('/', websiteData)
 
     addWebsiteObject(website)
     this.setState({

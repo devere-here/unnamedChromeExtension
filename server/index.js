@@ -33,8 +33,8 @@ app.get('/all', async (req, res) => {
 })
 
 app.post('/', async (req, res) => {
-  const { url, time } = req.body
-  const data = await redisClient.set(url, time)
+  const { url, allotedTime = 0, timeUsed = 0 } = req.body
+  const data = await redisClient.hset(url, allotedTime, timeUsed)
 
   res.json(data)
 })
