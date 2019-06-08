@@ -7,22 +7,6 @@
     "persistent": true,
     "page": "build/background.html"
   },
-  "browser_action": {
-    "default_title": "Open dashboard",
-    "default_popup": "src/popup.html"
-  },
- "chrome_url_overrides" : {
-   "newtab": "src/newtab.html"
- },
- "commands": {
-  "_execute_browser_action": {
-    "suggested_key": {
-      "default": "Ctrl+Shift+F",
-      "mac": "MacCtrl+Shift+F"
-    },
-    "description": "Opens popup.html"
-  }
- },
-  "permissions": ["activeTab", "storage", "webRequest", "webRequestBlocking", "tabs", "window"],
+  "permissions": ["tabs", "window"],
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
 }
