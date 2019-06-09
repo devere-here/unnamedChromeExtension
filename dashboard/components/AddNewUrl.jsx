@@ -30,7 +30,7 @@ class AddNewUrl extends Component {
       url: website.url,
       allotedTime: convertToMS(website.hours, website.minutes)
     }
-    await axiosInstance.post('/', websiteData)
+    await axiosInstance.post('/redisClient', websiteData)
 
     addWebsiteObject(website)
     this.setState({
