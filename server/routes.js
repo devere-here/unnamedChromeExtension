@@ -1,5 +1,6 @@
 const router = require("express").Router()
 const redisClient = require('./redis')
+const generateHMSetArray = require('./helpers')
 
 router.get('/all', async (req, res) => {
   const multi = redisClient.multi()
@@ -31,8 +32,9 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
-  const { url, allotedTime = 0, timeUsed = 0 } = req.body
-  const data = await redisClient.hmset(url, ['url', url, 'allotedTime', allotedTime, 'timeUsed', timeUsed])
+  const { url, allotedTime, timeUsed } = req.body
+  const hmSetArray = generateHMSetArray(req.body)
+  const data = await redisClient.hmset(url, hmSetArray)
 
   res.json(data)
 })

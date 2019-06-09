@@ -14,11 +14,19 @@ const urlObject = {}
 const storeNewUrl = (tab) => {
   const { id, url } = tab
   const currentWebsite = Url.parse(url).hostname
-  const currentTime = moment().format('x')
+  const data = axiosInstance.get(`/redisClient?name=${website.url}`)
+  if (data) {
+    const { allottedTime, timeUsed } = data
+    if (allottedTime < timeUsed) {
+      const currentTime = moment().format('x')
 
-  urlObject[id] = {
-    startTime: currentTime,
-    url: currentWebsite
+      urlObject[id] = {
+        startTime: currentTime,
+        url: currentWebsite
+      }
+    } else {
+      // code to block website
+    }
   }
 }
 
@@ -44,18 +52,22 @@ chrome.tabs.onCreated.addListener(async function(tab) {
 
 chrome.tabs.onRemoved.addListener(async function(tabId) {
   const website = urlObject[tabId]
-  const totalTime = await calculateTotalTime(website)
 
-  await axiosInstance.post(`/`, { url: website.url, time: totalTime})
+  if (website) {
+    const totalTime = await calculateTotalTime(website)
+    await axiosInstance.post(`/`, { url: website.url, timeUsed: totalTime })
+  }
   delete urlObject[tabId]
 })
 
 chrome.tabs.onUpdated.addListener(async function(tabId, changeInfo, tab) {
   if (_.get(changeInfo, ['status']) === 'complete') {
     const website = urlObject[tabId]
-    const totalTime = await calculateTotalTime(website) || 0
 
-    await axiosInstance.post(`/`, { url: website.url, time: totalTime })
+    if (website) {
+      const totalTime = await calculateTotalTime(website) || 0
+      await axiosInstance.post(`/`, { url: website.url, timeUsed: totalTime })
+    }
     storeNewUrl(tab)
   }
 })
