@@ -25,7 +25,8 @@ const storeNewUrl = (tab) => {
         url: currentWebsite
       }
     } else {
-      // code to block website
+      chrome.tabs.remove(id)
+      chrome.tabs.create({url : 'http://poop.bike/' });
     }
   }
 }
@@ -61,6 +62,16 @@ chrome.tabs.onRemoved.addListener(async function(tabId) {
 })
 
 chrome.tabs.onUpdated.addListener(async function(tabId, changeInfo, tab) {
+
+  // chrome.tabs.create({url : "soup.html"});
+
+  // chrome.browserAction.setPopup({ popup: './soup.html' }, function(result) {
+  //   console.log('in getPopup callback result is', result)
+  // })
+  // chrome.browserAction.setBadgeText({
+  //   text: '!!!!'
+  // }, function() { console.log('setBadbeText callback') })
+
   if (_.get(changeInfo, ['status']) === 'complete') {
     const website = urlObject[tabId]
 
