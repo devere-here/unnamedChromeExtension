@@ -24,7 +24,7 @@
     "axios": "^0.18.0",
     "babel-polyfill": "^6.26.0",
     "chrome-promise": "^3.0.4",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.13",
     "moment": "^2.24.0",
     "url-parse": "^1.4.7"
   }
