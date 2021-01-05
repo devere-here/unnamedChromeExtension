@@ -29,7 +29,7 @@
   "homepage": "https://github.com/devere-here/unnamedChromeExtension#readme",
   "dependencies": {
     "@babel/polyfill": "^7.4.4",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "express": "^4.16.4",
     "moment": "^2.24.0",
     "react": "^16.8.6",
